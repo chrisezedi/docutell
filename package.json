@@ -1,0 +1,12 @@
+{
+    "name": "Docutell",
+    "version": "1.0.0",
+    "description": "A Document intelligence application",
+    "main": "app",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Ekene Chris Ezedi",
+    "license": "ISC"
+  }
+
