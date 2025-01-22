@@ -1,12 +1,16 @@
 {
     "name": "Docutell",
     "version": "1.0.0",
-    "description": "A Document intelligence application",
+    "description": "A Document intelligence application update github desktop",
     "main": "app",
     "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
+        "start": "nodemon"
     },
     "author": "Ekene Chris Ezedi",
-    "license": "ISC"
-  }
-
+    "license": "ISC",
+    "devDependencies": {
+        "nodemon": "^3.1.9",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.7.3"
+    }
+}
