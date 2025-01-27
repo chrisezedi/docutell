@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { OAuth2Client } from "google-auth-library";
 import axios from "axios";
 
@@ -26,7 +26,11 @@ export const generateGoogleAuthUrl = (_: Request, res: Response) => {
   res.json({ url: authorizeUrl });
 };
 
-export const getUserData = async (req: Request, res: Response) => {
+export const getUserData = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const oAuth2Client = generateOauth2Client();
     const code = req.query.code as string;
@@ -39,9 +43,14 @@ export const getUserData = async (req: Request, res: Response) => {
     );
     const data = await response.data;
     // {"sub":"109398518582898527261","name":"Ekene Ezedi","given_name":"Ekene","family_name":"Ezedi","picture":"https://lh3.googleusercontent.com/a/ACg8ocKbAGFv-WeYMPZak-M7TFwFuy0NSPXaDQGInYEuHIC_ANFIdc4=s96-c","email":"ekenechrisezedi@gmail.com","email_verified":true}
+    console.log("user created",data)
     res.send(data);
-  } catch (error: any) {
-    console.log(error);
-    res.send(error);
+  } catch (error) {
+    next({
+      service: "google-auth",
+      url: (error as any)?.response?.config?.url,
+      thirdPartyError: (error as any)?.response?.data,
+      method: (error as any)?.response?.config?.method,
+    });
   }
 };
