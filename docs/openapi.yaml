@@ -1,0 +1,58 @@
+openapi: 3.0.0
+info:
+  title: Docutell API
+  description: Documentation for Docutell (Document Intelligence Service)
+  version: 1.0.0
+servers:
+  [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development server (local)",
+    },
+  ]
+tags:
+  - name: Authentication
+    description: Endpoints for authenticating users
+paths:
+  /auth/getGoogleAuthUrl:
+    get:
+      tags:
+        - auth
+      summary: Get Google authentication url
+      description: Retrieves authentication url required by user
+      responses:
+        '200':
+          description: url generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleAuthUrl'
+  /auth/oauth:
+    get:
+      tags:
+        - auth
+      summary: Get authenticated google user info
+      description: Get the details of the authenticated user and save in db
+      parameters:
+        - name: code
+          in: query
+          description: code sent by google auth
+          required: true
+          schema:
+            type: string
+      responses:
+        '500':
+          description: something went wrong
+          content:
+            application/json:
+              schema:
+                type: string
+components:
+  schemas:
+    GoogleAuthUrl:
+      type: object
+      properties:
+        url:
+          type: string
+          format: int64
+          example: https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/userinfo.profile&response_type=code&client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI
