@@ -1,5 +1,4 @@
 import express from "express";
-import config from "../config/index";
 import routes from "./routes/auth";
 import "dotenv/config";
 import { errorHandler } from "./middlewares/error";
@@ -8,6 +7,7 @@ import { load } from "js-yaml";
 import { readFileSync } from "fs";
 import { join } from "path";
 import swaggerJSDoc, { Options } from "swagger-jsdoc";
+import dbConnection from "../config/db";
 
 const filePath = join(__dirname, "../docs/openapi.yaml");
 const swaggerDefinition: any = load(readFileSync(filePath, "utf-8"));
@@ -21,6 +21,8 @@ app.use("/auth", routes);
 
 app.use(errorHandler);
 
-app.listen(config.port, () =>
-  console.log(`Server running on PORT ${config.port}`)
+dbConnection();
+
+app.listen(process.env.PORT, () =>
+  console.log(`Server running on PORT ${process.env.PORT}`)
 );
