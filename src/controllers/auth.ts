@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { OAuth2Client } from "google-auth-library";
 import axios from "axios";
+import User from "../models/user";
 
 const generateOauth2Client = (): OAuth2Client => {
   return new OAuth2Client({
@@ -42,9 +43,15 @@ export const getUserData = async (
       { headers: { Authorization: `Bearer ${access_token}` } }
     );
     const data = await response.data;
-    // {"sub":"109398518582898527261","name":"Ekene Ezedi","given_name":"Ekene","family_name":"Ezedi","picture":"https://lh3.googleusercontent.com/a/ACg8ocKbAGFv-WeYMPZak-M7TFwFuy0NSPXaDQGInYEuHIC_ANFIdc4=s96-c","email":"ekenechrisezedi@gmail.com","email_verified":true}
-    console.log("user created",data)
-    res.send(data);
+    const user = new User({
+      firstName: data?.given_name,
+      lastName: data?.family_name,
+      email: data?.email,
+      profileImg: data?.picture,
+      isVerified: data?.email_verified
+    })
+    await user.save();
+    res.json({status:200, message:"User created successfully"});
   } catch (error) {
     next({
       service: "google-auth",
