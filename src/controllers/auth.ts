@@ -3,6 +3,13 @@ import { OAuth2Client } from "google-auth-library";
 import axios from "axios";
 import User from "../models/user";
 
+declare module "express-session" {
+  interface SessionData {
+    userId: string;
+    email: string;
+  }
+}
+
 const generateOauth2Client = (): OAuth2Client => {
   return new OAuth2Client({
     clientId: process.env.CLIENT_ID,
@@ -43,15 +50,22 @@ export const getUserData = async (
       { headers: { Authorization: `Bearer ${access_token}` } }
     );
     const data = await response.data;
-    const user = new User({
-      firstName: data?.given_name,
-      lastName: data?.family_name,
-      email: data?.email,
-      profileImg: data?.picture,
-      isVerified: data?.email_verified
-    })
-    await user.save();
-    res.json({status:200, message:"User created successfully"});
+    const existingUser = await User.findOne({ email: data?.email });
+    if (!existingUser) {
+      const user = new User({
+        firstName: data?.given_name,
+        lastName: data?.family_name,
+        email: data?.email,
+        profileImg: data?.picture,
+        isVerified: data?.email_verified,
+      });
+      const newUser = await user.save();
+      req.session.userId = newUser.id;
+      res.json({ status: 200, message: "User created successfully" });
+    } else {
+      req.session.userId = existingUser.id;
+      res.json({ status: 200, message: "User Authenticated successfully" });
+    }
   } catch (error) {
     next({
       service: "google-auth",
