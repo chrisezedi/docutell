@@ -4,7 +4,7 @@
     "description": "A Document intelligence application update github desktop",
     "main": "app",
     "scripts": {
-        "start": "nodemon"
+        "dev": "nodemon"
     },
     "author": "Ekene Chris Ezedi",
     "license": "ISC",

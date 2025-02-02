@@ -16,7 +16,8 @@ const filePath = join(__dirname, "../docs/openapi.yaml");
 const swaggerDefinition: any = load(readFileSync(filePath, "utf-8"));
 const options: Options = { swaggerDefinition, apis: ["'./routes/*.ts'"] };
 const specs = swaggerJSDoc(options);
-const redisClient = Redis.createClient()
+const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
+const redisClient = new Redis(redisUrl)
 const redisStore = new RedisStore({
   client:redisClient,
   prefix:"docutell"
