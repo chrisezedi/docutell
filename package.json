@@ -5,8 +5,8 @@
   "main": "app",
   "scripts": {
     "dev": "nodemon",
-    "build": "tsc",
-    "start": "node dist/app.js"
+    "build": "tsc && copyfiles \"docs/openapi.yaml\" dist",
+    "start": "node dist/src/app.js"
   },
   "author": "Ekene Chris Ezedi",
   "license": "ISC",
@@ -16,6 +16,7 @@
     "@types/js-yaml": "^4.0.9",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.7",
+    "copyfiles": "^2.4.1",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
