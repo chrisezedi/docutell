@@ -24,6 +24,7 @@ const redisStore = new RedisStore({
 })
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.use("/docs", serve, setup(specs));
 app.use(errorHandler);
@@ -44,6 +45,6 @@ dbConnection();
 
 app.use("/auth", routes);
 
-app.listen(process.env.PORT, () =>
+app.listen(PORT, () =>
   console.log(`Server running on PORT ${process.env.PORT}`)
 );
