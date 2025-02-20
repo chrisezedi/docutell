@@ -11,6 +11,9 @@ import dbConnection from "../config/db";
 import session from "express-session";
 import { RedisStore } from "connect-redis";
 import { Redis } from "ioredis";
+import cors, { CorsOptions } from "cors";
+import helmet from "helmet";
+import { CustomError } from "models/generics";
 
 const filePath = join(__dirname, "../docs/openapi.yaml");
 const swaggerDefinition: any = load(readFileSync(filePath, "utf-8"));
@@ -23,11 +26,27 @@ const redisStore = new RedisStore({
   prefix:"docutell"
 })
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
+const corsOptions:CorsOptions = {
+  origin:(origin:string | undefined, callback:(err: Error | null,allow?:boolean) => void) => {
+    const allowedOrigins = ["http://localhost:3000"];
 
+    if (origin && allowedOrigins.includes(origin)) {
+      callback(null,true)
+    } else {
+      let error:CustomError = new Error("Not allowed by Cors")
+      error.status = 403;
+      callback(error,false)
+    }
+  },
+  credentials:true
+}
+
+const app = express();
+
+app.use(cors(corsOptions))
+app.use(helmet())
 app.use("/docs", serve, setup(specs));
-app.use(errorHandler);
 app.use(session({
   name:"sid",
   store:redisStore,
@@ -44,7 +63,7 @@ app.use(session({
 dbConnection();
 
 app.use("/auth", routes);
-
+app.use(errorHandler);
 app.listen(PORT, () =>
   console.log(`Server running on PORT ${process.env.PORT}`)
 );
