@@ -54,7 +54,7 @@ app.use(session({
   saveUninitialized:false,
   secret: process.env.REDIS_SESSION_SECRET as string,
   cookie: {
-    secure:true,
+    secure:false,
     httpOnly:true,
     maxAge:1000 * 60 * 60 * 24 * 7
   }
