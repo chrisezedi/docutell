@@ -29,7 +29,7 @@ const redisStore = new RedisStore({
 const PORT = process.env.PORT;
 const corsOptions:CorsOptions = {
   origin:(origin:string | undefined, callback:(err: Error | null,allow?:boolean) => void) => {
-    const allowedOrigins = ["http://localhost:3000"];
+    const allowedOrigins = ["http://localhost:3000","https://docutell-client.onrender.com"];
 
     if (origin && allowedOrigins.includes(origin)) {
       callback(null,true)
